@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/gondyb/adventofcode/2022/day_1/input"
+	"github.com/gondyb/adventofcode/2022/day_01/input"
 )
 
 func main() {

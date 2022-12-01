@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gondyb/adventofcode/2022/day_1/model"
+	"github.com/gondyb/adventofcode/2022/day_01/model"
 )
 
 //go:embed input.txt
