@@ -12,13 +12,24 @@ const (
 	Scissors
 )
 
-var mappings = map[string]Move{
+type Outcome int64
+
+const (
+	Win Outcome = iota
+	Lose
+	Draw
+)
+
+var moveMappings = map[string]Move{
 	"A": Rock,
 	"B": Paper,
 	"C": Scissors,
-	"X": Rock,
-	"Y": Paper,
-	"Z": Scissors,
+}
+
+var outcomeMappigs = map[string]Outcome{
+	"X": Lose,
+	"Y": Draw,
+	"Z": Win,
 }
 
 var points = map[Move]int{
@@ -27,10 +38,24 @@ var points = map[Move]int{
 	Scissors: 3,
 }
 
-var wins = map[Move]Move{
-	Rock:     Scissors,
-	Paper:    Rock,
-	Scissors: Paper,
+type Game map[Move]Move
+
+var outcomes = map[Outcome]Game{
+	Win: map[Move]Move{
+		Scissors: Rock,
+		Rock:     Paper,
+		Paper:    Scissors,
+	},
+	Lose: map[Move]Move{
+		Rock:     Scissors,
+		Paper:    Rock,
+		Scissors: Paper,
+	},
+	Draw: map[Move]Move{
+		Scissors: Scissors,
+		Rock:     Rock,
+		Paper:    Paper,
+	},
 }
 
 type Round struct {
@@ -41,16 +66,20 @@ type Round struct {
 func RoundFromLine(line string) Round {
 	m := strings.Split(line, " ")
 
+	action := outcomeMappigs[m[1]]
+	opponentMove := moveMappings[m[0]]
+	myMove := outcomes[action][opponentMove]
+
 	return Round{
-		OpponentMove: mappings[m[0]],
-		MyMove:       mappings[m[1]],
+		OpponentMove: opponentMove,
+		MyMove:       myMove,
 	}
 }
 
 func (r Round) GetPoints() int {
 	movePoints := points[r.MyMove]
 	winPoints := 0
-	if wins[r.MyMove] == r.OpponentMove {
+	if outcomes[Lose][r.MyMove] == r.OpponentMove {
 		winPoints = 6
 	} else if r.MyMove == r.OpponentMove {
 		winPoints = 3
